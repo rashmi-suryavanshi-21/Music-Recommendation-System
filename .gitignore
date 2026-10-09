@@ -182,5 +182,5 @@ recommend.log
 
 # app files
 cosine_sim.pkl
-df_cleaned.pkl
-tfidf_matrix.pkl
+!src/df_cleaned.pkl
+!src/tfidf_matrix.pkl
