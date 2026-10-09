@@ -2,6 +2,7 @@
 import joblib
 import logging
 from pathlib import Path
+from sklearn.metrics.pairwise import linear_kernel
 
 # Setup logging
 logging.basicConfig(
@@ -17,7 +18,7 @@ logging.info("🔁 Loading data...")
 try:
     BASE_DIR = Path(__file__).resolve().parent
     df = joblib.load(BASE_DIR / "df_cleaned.pkl")
-    cosine_sim = joblib.load(BASE_DIR / "cosine_sim.pkl")
+    tfidf_matrix = joblib.load(BASE_DIR / "tfidf_matrix.pkl")
     logging.info("✅ Data loaded successfully.")
 except Exception as e:
     logging.error("❌ Failed to load required files: %s", str(e))
@@ -31,7 +32,7 @@ def recommend_songs(song_name, top_n=5):
         logging.warning("⚠️ Song not found in dataset.")
         return None
     idx = idx[0]
-    sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = list(enumerate(linear_kernel(tfidf_matrix[idx], tfidf_matrix).ravel()))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:top_n + 1]
     song_indices = [i[0] for i in sim_scores]
     logging.info("✅ Top %d recommendations ready.", top_n)
